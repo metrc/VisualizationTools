@@ -27,8 +27,6 @@ metrc_basic_report <- function(html_table_list, file_name){
     }
     first <- FALSE
     input_table <- html_table_list[i]
-    input_table <- input_table %>% 
-      kable_styling("striped", full_width = F, position="left")
     input_table <- str_replace_all(input_table, 'table table-striped"', 'table-basic" border=1 frame=hsides rules=rows')
     input_table <- str_replace_all(input_table, '#ddd', 'black')
     input_table <- gsub('([a-z])\\.','\\1 ',input_table)
