@@ -26,7 +26,13 @@ metrc_basic_report <- function(html_table_list, file_name){
       table_html <- paste0(table_html, '\n<p style="page-break-after: always;">&nbsp;</p><br/>\n')
     }
     first <- FALSE
-    table_html <- paste0(table_html, '<h3>Table ',i,'. ',table_names[i],'</h3>\n<br/>\n',html_table_list[i],'\n<br/>\n')
+    input_table <- html_table_list[i]
+    input_table <- input_table %>% 
+      kable_styling("striped", full_width = F, position="left")
+    input_table <- str_replace_all(input_table, 'table table-striped"', 'table-basic" border=1 frame=hsides rules=rows')
+    input_table <- str_replace_all(input_table, '#ddd', 'black')
+    input_table <- gsub('([a-z])\\.','\\1 ',input_table)
+    table_html <- paste0(table_html, '<h3>Table ',i,'. ',table_names[i],'</h3>\n<br/>\n',input_table,'\n<br/>\n')
     html_page <- paste0(html_page,"\n",table_html)
   }
   
