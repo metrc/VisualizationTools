@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 #' count_split_cols_long_and_wide
+=======
+
+
+#' Count Split Cols Long and Wide
+>>>>>>> 1f646747cb9a76360f24e2dee5f030871f16d389
 #' 
 #' @description splits columns with a given seperator, then counts the values betwwen
 #' the resultant groupt
@@ -26,7 +32,12 @@ count_split_cols_long_and_wide <- function(df, seperator, remove_na=TRUE) {
   return(out)
 }
 
+<<<<<<< HEAD
 #' summate_levels
+=======
+
+#' Summate Levels
+>>>>>>> 1f646747cb9a76360f24e2dee5f030871f16d389
 #' 
 #' @description Gives the sum of all the columns in a table
 #' 
@@ -51,7 +62,12 @@ summate_levels <- function(df, group_colnames, level_colname, levels) {
   return(out)
 }
 
+<<<<<<< HEAD
 #' reorder_rows
+=======
+
+#' Reorder Rows
+>>>>>>> 1f646747cb9a76360f24e2dee5f030871f16d389
 #' 
 #' @description sreorders the rows of a dataframe based on given vectors
 #' 
@@ -88,4 +104,7 @@ reorder_rows <- function(df, new_row_order, unspecified_to_bottom=TRUE) {
     arrange(across(all_of(names(new_row_order))))
   return(out)
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1f646747cb9a76360f24e2dee5f030871f16d389
