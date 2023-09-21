@@ -117,7 +117,8 @@ column_unzipper <- function(df, name, sep=', '){
     pivot_wider(
       names_from = col,
       values_from = col
-    )
+    ) %>%
+    mutate(across(!1, ~ !is.na(.)))
   return(out)
 }
 
