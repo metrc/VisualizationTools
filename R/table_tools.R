@@ -109,6 +109,7 @@ reorder_rows <- function(df, new_row_order, unspecified_to_bottom=TRUE) {
 #' column_unzipper()
 #' }
 column_unzipper <- function(df, name, sep=', '){
+  orig <- colnames(df)
   out <- df %>%
     rename(col= !!sym(name)) %>% 
     mutate(col = strsplit(col,sep)) %>%
@@ -117,8 +118,10 @@ column_unzipper <- function(df, name, sep=', '){
     pivot_wider(
       names_from = col,
       values_from = col
-    ) %>%
-    mutate(across(!1, ~ !is.na(.)))
+    ) 
+  new_cols <- colnames(out)[!colnames(out) %in% orig]
+  out <- out %>%
+    mutate(across(all_of(new_cols), ~ !is.na(.)))
   return(out)
 }
 
