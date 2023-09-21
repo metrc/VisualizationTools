@@ -143,7 +143,7 @@ boolean_column_counter <- function(df, groups = NULL){
       summarize(across(is.logical, ~sum(. == TRUE, na.rm = TRUE), .names = "{.col}"))
   } else {
     out <- df %>%
-      group_by(.data[[groups]]) %>% 
+      group_by(across(all_of(groups))) %>% 
       summarize(across(is.logical, ~sum(. == TRUE, na.rm = TRUE), .names = "{.col}"))
   }
   return(out)
