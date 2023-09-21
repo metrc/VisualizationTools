@@ -97,7 +97,8 @@ reorder_rows <- function(df, new_row_order, unspecified_to_bottom=TRUE) {
 #' @description takes a dataframe with comma separated list and widens it
 #' into multiple columns, with boolean values
 #'
-#' @param df data to unzip the columns, must be two columns
+#' @param df data to unzip the columns
+#' @param name of column to separate
 #' @param sep string to separate columns, default is ','
 #'
 #' @return unzipped tibble
@@ -107,16 +108,16 @@ reorder_rows <- function(df, new_row_order, unspecified_to_bottom=TRUE) {
 #' \dontrun{
 #' column_unzipper()
 #' }
-column_unzipper <- function(df, sep=', '){
+column_unzipper <- function(df, name, sep=', '){
   out <- df %>%
+    rename(col= !!sym(name)) %>% 
     mutate(col = strsplit(col,sep)) %>%
     unnest(col) %>%
     filter(!is.na(col)) %>%
     pivot_wider(
       names_from = col,
       values_from = col
-    ) %>%
-    mutate(across(!1, ~ !is.na(.)))
+    )
   return(out)
 }
 

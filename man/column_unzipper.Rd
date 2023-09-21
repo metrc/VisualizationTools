@@ -4,10 +4,12 @@
 \alias{column_unzipper}
 \title{Column unzipper}
 \usage{
-column_unzipper(df, sep = ", ")
+column_unzipper(df, name, sep = ", ")
 }
 \arguments{
-\item{df}{data to unzip the columns, must be two columns}
+\item{df}{data to unzip the columns}
+
+\item{name}{of column to separate}
 
 \item{sep}{string to separate columns, default is ','}
 }
