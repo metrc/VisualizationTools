@@ -3,6 +3,7 @@
 export(boolean_column_counter)
 export(column_unzipper)
 export(count_split_cols_long_and_wide)
+export(format_count_percent)
 export(metrc_basic_report)
 export(reorder_rows)
 export(summate_levels)
