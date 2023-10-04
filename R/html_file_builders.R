@@ -72,7 +72,9 @@ metrc_basic_report_numbers <- function(html_table_list, numbers, file_name){
     input_table <- str_replace_all(input_table, 'table table-striped"', 'table-basic" border=1 frame=hsides rules=rows')
     input_table <- str_replace_all(input_table, '#ddd', 'black')
     input_table <- gsub('([a-z])\\.','\\1 ',input_table)
-    table_html <- paste0(table_html, '<h3>Table ',numbers[i],'. ',table_names[i],'</h3>\n<br/>\n',input_table,'\n<br/>\n')
+    table_html <- paste0(table_html, '<h3>Table ',
+                         ifelse(str_detect(numbers[i],"\\."),paste0(numbers[i],'. '), paste0(numbers[i],' ')),
+                         table_names[i],'</h3>\n<br/>\n',input_table,'\n<br/>\n')
     html_page <- paste0(html_page,"\n",table_html)
   }
   
