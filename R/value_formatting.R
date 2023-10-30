@@ -14,7 +14,7 @@
 #' format_count_percent()
 #' }
 format_count_percent <- function(numerator, denominator, decimals=0){
-  return(paste0(numerator,' (', format(round(numerator / denominator * 100, decimals), nsmall = decimals), '%)'))
+  return(paste0(numerator,' (', trimws(format(round(numerator / denominator * 100, decimals), nsmall = decimals)), '%)'))
 }
 
 
@@ -33,5 +33,5 @@ format_count_percent <- function(numerator, denominator, decimals=0){
 #' format_mean_sd()
 #' }
 format_mean_sd <- function(values, decimals = 2){
-  return(paste0(format(round(mean(values, na.rm = TRUE),decimals), nsmall = decimals), " (", format(round(sd(values, na.rm = TRUE),decimals), nsmall = decimals), ")"))
+  return(paste0(trimws(format(round(mean(values, na.rm = TRUE),decimals), nsmall = decimals)), " (", trimws(format(round(sd(values, na.rm = TRUE),decimals), nsmall = decimals)), ")"))
 }
