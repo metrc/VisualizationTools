@@ -14,7 +14,7 @@
 #' format_count_percent()
 #' }
 format_count_percent <- function(numerator, denominator, decimals=0){
-  return(paste0(numerator,' (', trimws(format(round(numerator / denominator * 100, decimals), nsmall = decimals)), '%)'))
+  return(ifelse(numerator==0 & denominator==0, paste0(numerator,' (', trimws(format(round(numerator, decimals), nsmall = decimals)), '%)'), paste0(numerator,' (', trimws(format(round(numerator / denominator * 100, decimals), nsmall = decimals)), '%)'))
 }
 
 
