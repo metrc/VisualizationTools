@@ -136,7 +136,7 @@ metrc_basic_report_numbers_labels <- function(html_table_list, numbers, labels, 
 #'
 #' @param img_tag image tag that needs the footnote
 #' @param footnotes the vector of the footnotes to add
-#' @param mode number or alphabet mode for the superscript
+#' @param notation number or alphabet mode for the superscript
 #'
 #' @return html string of characters
 #' @export
@@ -145,7 +145,7 @@ metrc_basic_report_numbers_labels <- function(html_table_list, numbers, labels, 
 #' \dontrun{
 #' add_image_footnote()
 #' }
-add_image_footnote <- function(img_tag, footnotes, mode = "number") {
+add_image_footnote <- function(img_tag, footnotes, notation = "number") {
   # Helper function to generate footnote markers
   getMarker <- function(i, mode) {
     if (mode == "number") {

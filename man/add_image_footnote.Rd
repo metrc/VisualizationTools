@@ -4,14 +4,14 @@
 \alias{add_image_footnote}
 \title{Add Image Footnote}
 \usage{
-add_image_footnote(img_tag, footnotes, mode = "number")
+add_image_footnote(img_tag, footnotes, notation = "number")
 }
 \arguments{
 \item{img_tag}{image tag that needs the footnote}
 
 \item{footnotes}{the vector of the footnotes to add}
 
-\item{mode}{number or alphabet mode for the superscript}
+\item{notation}{number or alphabet mode for the superscript}
 }
 \value{
 html string of characters
