@@ -126,3 +126,54 @@ metrc_basic_report_numbers_labels <- function(html_table_list, numbers, labels, 
   html_page <- paste(html_page,'\n\n</body>\n</html>')
   write_file(html_page, file_name)
 }
+
+
+
+
+#' Add Image Footnote
+#'
+#' @description This function adds footnotes to images
+#'
+#' @param img_tag image tag that needs the footnote
+#' @param footnotes the vector of the footnotes to add
+#' @param mode number or alphabet mode for the superscript
+#'
+#' @return html string of characters
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' add_image_footnote()
+#' }
+add_image_footnote <- function(img_tag, footnotes, mode = "number") {
+  # Helper function to generate footnote markers
+  getMarker <- function(i, mode) {
+    if (mode == "number") {
+      return(as.character(i))
+    } else {
+      # ASCII value for 'a' is 97
+      return(tolower(LETTERS[i]))
+    }
+  }
+  
+  # Function to wrap content with div and apply CSS for left alignment
+  wrapWithDiv <- function(content) {
+    return(sprintf('<div style="text-align: left;">%s</div>', content))
+  }
+  
+  # Main processing loop for each img tag
+  processedTags <- sapply(imgTags, function(tag) {
+    # Ensuring each img tag is wrapped with a div and has footnotes
+    footnoteText <- ""
+    for (i in 1:length(footnotes)) {
+      marker <- getMarker(i, mode)
+      footnoteText <- paste(footnoteText, sprintf('<sup>%s</sup>%s', marker, footnotes[i]), sep = "<br>")
+    }
+    
+    # Combine img tag and footnotes, then wrap with div for formatting
+    combinedContent <- paste(tag, wrapWithDiv(footnoteText))
+    return(combinedContent)
+  })
+  
+  return(processedTags)
+}
