@@ -153,3 +153,27 @@ boolean_column_counter <- function(df, groups = NULL){
 }
 
 
+
+#' Confirm Stability of Related Visual
+#' 
+#' @description Makes sure a related visualization has not changed
+#'
+#' @param function_name name of the visualization function
+#' @param key verification key
+#'
+#' @return summed tibble
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' confirm_stability_of_related_visual()
+#' }
+confirm_stability_of_related_visual <- function(function_name, key){
+  test <- get(function_name, envir = loadNamespace("VisualizationLibrary"))
+  code <- deparse(test)
+  code <- paste(code,collapse="\n")
+  check_key <- rlang::hash(code)
+  if(check_key != key){
+    stop(paste0("Function: ",function_name," has changed since this function was updated (key: ",check_key,")"))
+  }
+}
