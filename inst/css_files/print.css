@@ -1,0 +1,14 @@
+/* This CSS file is applied for printing only */
+
+body {
+    background-color: unset !important;
+}
+
+/* print.css */
+table, img, svg {
+    break-inside: avoid;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+}

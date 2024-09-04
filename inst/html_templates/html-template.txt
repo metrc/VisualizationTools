@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="$lang$" xml:lang="$lang$"$if(dir)$ dir="$dir$"$endif$>
+<head>
+    <!-- Pandoc HTML Format Default Header Tags -->
+    <meta charset="utf-8" />
+    <meta name="generator" content="pandoc" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+    $for(author-meta)$
+    <meta name="author" content="$author-meta$" />
+    $endfor$
+    $if(date-meta)$
+    <meta name="dcterms.date" content="$date-meta$" />
+    $endif$
+    $if(keywords)$
+    <meta name="keywords" content="$for(keywords)$$keywords$$sep$, $endfor$" />
+    $endif$
+    $if(description-meta)$
+    <meta name="description" content="$description-meta$" />
+    $endif$
+    <title>$title$</title>
+    $for(css)$
+    <link rel="stylesheet" href="$css$" type="text/css" />
+    $endfor$
+    $for(print_css)$
+    <link rel="stylesheet" href="$print_css$" type="text/css" media="print" />
+    $endfor$
+</head>
+<body class="libertinus">
+    <header>
+        <h1>$title$</h1>
+        <p class="author">
+        $author$<br/>
+        $date$
+    </p>
+    </header>
+    <main>
+        <article>
+        $body$
+        </article>
+    </main>
+</body>
+</html>

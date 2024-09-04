@@ -1,0 +1,3 @@
+[submodule "inst/css_files/latex-css"]
+	path = inst/css_files/latex-css
+	url = https://github.com/vincentdoerig/latex-css

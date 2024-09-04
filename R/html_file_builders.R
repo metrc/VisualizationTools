@@ -168,3 +168,123 @@ add_image_footnote <- function (img_tag, footnotes, notation = "number")
   combinedContent <- paste(img_tag, wrapWithDiv(footnoteText))
   return(combinedContent)
 }
+
+
+#' Wrap HTML snippet in a figure tag with an optional caption and number
+#'
+#' This function takes an HTML snippet and wraps it in a `<figure>` tag. If a 
+#' caption is provided, it will be added within a `<figcaption>` tag. If 
+#' `caption_number` is provided, the caption will be prefixed with 
+#' "Figure [caption_number]: ".
+#'
+#' @param html A character string containing the HTML snippet to be wrapped.
+#' @param caption An optional character string for the figure caption. If `NULL`,
+#' no caption will be added.
+#' @param caption_number An optional integer or string to prefix the caption 
+#' with a number.
+#'
+#' @return The function does not return a value but prints the HTML code with 
+#' the figure and caption tags.
+#'
+#' @examples
+#' # Example usage:
+#' # Create an HTML snippet
+#' html_snippet <- "<table><tr><td>Example</td></tr></table>"
+#' 
+#' # Call figure() to wrap the snippet in figure tags with a caption and number
+#' figure(html_snippet, "This is a caption", 1)
+#'
+figure <- function(html, caption = NULL, caption_number = NULL) {
+  # Start building the figure HTML
+  figure_html <- "<figure>"
+  
+  # Add the HTML content
+  figure_html <- paste0(figure_html, html)
+  
+  # If a caption is provided, add it within a <figcaption> tag
+  if (!is.null(caption)) {
+    if (!is.null(caption_number)) {
+      caption <- paste0("<b>Figure ", caption_number, ":</b> ", caption)
+    }
+    figure_html <- paste0(figure_html, "<figcaption>", caption, "</figcaption>")
+  }
+  
+  # Close the figure tag
+  figure_html <- paste0(figure_html, "</figure>")
+  
+  # Output the complete figure HTML
+  cat(figure_html)
+}
+
+#' Add a caption to an HTML table snippet with an optional number
+#'
+#' This function takes an HTML snippet containing a table and adds a `<caption>` 
+#' tag to it. If a caption is provided, it will be inserted after the opening 
+#' `<table>` tag. If `caption_number` is provided, the caption will be prefixed 
+#' with "Table [caption_number]: ". If no caption is provided, the function 
+#' outputs the snippet as is.
+#'
+#' @param html A character string containing the HTML table snippet.
+#' @param caption An optional character string for the table caption. If `NULL`,
+#' no caption will be added.
+#' @param caption_number An optional integer or string to prefix the caption 
+#' with a number.
+#'
+#' @return The function does not return a value but prints the modified HTML 
+#' code with the added caption.
+#'
+#' @examples
+#' # Example usage:
+#' # Create an HTML table snippet
+#' html_table <- "<table><tr><td>Example</td></tr></table>"
+#' 
+#' # Call table() to add a caption to the table with a number
+#' table(html_table, "This is a table caption", 1)
+#'
+table <- function(html, caption = NULL, caption_number = NULL) {
+  # If a caption is provided, add it after the opening <table> tag
+  if (!is.null(caption)) {
+    # Find the position of the first <table> tag and remove it
+    html <- sub("<table>", "", html, fixed = TRUE)
+    
+    # Prefix the caption with the caption number if provided
+    if (!is.null(caption_number)) {
+      caption <- paste0("<b>Table ", caption_number, ":</b> ", caption)
+    }
+    
+    # Insert the <caption> tag after the opening <table> tag
+    table_html <- paste0("<table><caption>", caption, "</caption>", html)
+  } else {
+    # If no caption is provided, output the HTML as is
+    table_html <- html
+  }
+  
+  # Output the complete table HTML
+  cat(table_html)
+}
+
+
+#' Install Default Files for R Markdown Support
+#'
+#' @description Installs all files needed to support R Markdown files instead of R scripts
+#'
+#' @param target_path install path
+#'
+#' @return nothing
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' install_default_files()
+#' }
+install_default_files <- function(target_path){
+  cp_files <- c(system.file("css_files", "latex-css", "style.css", package = "VisualizationTools"),
+                system.file("css_files", "override.css", package = "VisualizationTools"),
+                system.file("css_files", "print.css", package = "VisualizationTools"),
+                system.file("html_templates", "html-template.html", package = "VisualizationTools"))
+  cp_files <- cp_files[cp_files!=""]
+  for(cp_file in cp_files){
+    cp_target <- file.path(target_path,basename(cp_file))
+    file.copy(cp_file, cp_target)
+  }
+}
