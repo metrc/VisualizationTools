@@ -13,7 +13,7 @@
 #' metrc_basic_report()
 #' }
 metrc_basic_report <- function(html_table_list, file_name){
-  injected_tags <- '\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />\n'
+  injected_tags <- '\n<link rel="shortcut icon" href="#"><meta name="viewport" content="width=device-width, initial-scale=1">\n<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />\n'
   style_text <- '// this is a simple bit of CSS that makes the tables and text in a report look refined\nbody {\n  font-family: "Times New Roman", Times, serif;\nmargin-left: 20px;\n}\ntable.table-basic {\n  font-family: "Times New Roman", Times, serif;\n  width: 100%;\n  text-align: center;\n}\ntable.table-basic td, table.table-basic th {\n  padding: 10px;\n}\ntable.table-basic tbody td {\n  font-size: 13px;\n}\ntable.table-basic tbody tr {\n    border-bottom: 1px solid black;\n    border-top: 1px solid black;\n    border-collapse: collapse;\n}\n'
   injected_style_text <- 'table{\n    border-collapse:collapse;\n}\ntr td{\n    page-break-inside: avoid;\n    white-space: nowrap;\n}'
   html_page <- paste('<!DOCTYPE html>\n<html>\n<head>',injected_tags,'<style>\n',style_text,injected_style_text,'</style></head>\n<br/>',sep='')
@@ -55,7 +55,7 @@ metrc_basic_report <- function(html_table_list, file_name){
 #' metrc_basic_report_numbers()
 #' }
 metrc_basic_report_numbers <- function(html_table_list, numbers, file_name){
-  injected_tags <- '\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />\n'
+  injected_tags <- '\n<link rel="shortcut icon" href="#"><meta name="viewport" content="width=device-width, initial-scale=1">\n<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />\n'
   style_text <- '// this is a simple bit of CSS that makes the tables and text in a report look refined\nbody {\n  font-family: "Times New Roman", Times, serif;\n}\ntable.table-basic {\n  font-family: "Times New Roman", Times, serif;\n  width: 100%;\n  text-align: center;\n}\ntable.table-basic td, table.table-basic th {\n  padding: 10px;\n}\ntable.table-basic tbody td {\n  font-size: 13px;\n}\ntable.table-basic tbody tr {\n    border-bottom: 1px solid black;\n    border-top: 1px solid black;\n    border-collapse: collapse;\n}\n'
   injected_style_text <- 'table{\n    border-collapse:collapse;\n}\ntr td{\n    page-break-inside: avoid;\n    white-space: nowrap;\n}'
   html_page <- paste('<!DOCTYPE html>\n<html>\n<head>',injected_tags,'<style>\n',style_text,injected_style_text,'</style></head>\n<br/>',sep='')
@@ -100,7 +100,7 @@ metrc_basic_report_numbers <- function(html_table_list, numbers, file_name){
 #' metrc_basic_report_numbers_labels()
 #' }
 metrc_basic_report_numbers_labels <- function(html_table_list, numbers, labels, file_name){
-  injected_tags <- '\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />\n'
+  injected_tags <- '\n<link rel="shortcut icon" href="#"><meta name="viewport" content="width=device-width, initial-scale=1">\n<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />\n'
   style_text <- '// this is a simple bit of CSS that makes the tables and text in a report look refined\nbody {\n  font-family: "Times New Roman", Times, serif;\n}\ntable.table-basic {\n  font-family: "Times New Roman", Times, serif;\n  width: 100%;\n  text-align: center;\n}\ntable.table-basic td, table.table-basic th {\n  padding: 10px;\n}\ntable.table-basic tbody td {\n  font-size: 13px;\n}\ntable.table-basic tbody tr {\n    border-bottom: 1px solid black;\n    border-top: 1px solid black;\n    border-collapse: collapse;\n}\ntable.table-basic tfoot tr td {\n    text-align: left;\n}\n'
   injected_style_text <- 'table{\n    border-collapse:collapse;\n}\ntr td{\n    page-break-inside: avoid;\n    white-space: nowrap;\n}'
   html_page <- paste('<!DOCTYPE html>\n<html>\n<head>',injected_tags,'<style>\n',style_text,injected_style_text,'</style></head>\n<br/>',sep='')
