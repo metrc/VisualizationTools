@@ -33,5 +33,7 @@ html_table <- "<table><tr><td>Example</td></tr></table>"
 
 # Call table() to add a caption to the table with a number
 table(html_table, "This is a table caption", 1)
-
+\dontrun{
+table()
+}
 }

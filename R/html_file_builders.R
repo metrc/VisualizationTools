@@ -193,7 +193,9 @@ add_image_footnote <- function (img_tag, footnotes, notation = "number")
 #' 
 #' # Call figure() to wrap the snippet in figure tags with a caption and number
 #' figure(html_snippet, "This is a caption", 1)
-#'
+#' \dontrun{
+#' figure()
+#' }
 figure <- function(html, caption = NULL, caption_number = NULL) {
   # Start building the figure HTML
   figure_html <- "<figure>"
@@ -240,7 +242,9 @@ figure <- function(html, caption = NULL, caption_number = NULL) {
 #' 
 #' # Call table() to add a caption to the table with a number
 #' table(html_table, "This is a table caption", 1)
-#'
+#' \dontrun{
+#' table()
+#' }
 table <- function(html, caption = NULL, caption_number = NULL) {
   # If a caption is provided, add it after the opening <table> tag
   if (!is.null(caption)) {
