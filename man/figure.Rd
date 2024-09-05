@@ -26,12 +26,6 @@ caption is provided, it will be added within a `<figcaption>` tag. If
 "Figure [caption_number]: ".
 }
 \examples{
-# Example usage:
-# Create an HTML snippet
-html_snippet <- "<table><tr><td>Example</td></tr></table>"
-
-# Call figure() to wrap the snippet in figure tags with a caption and number
-figure(html_snippet, "This is a caption", 1)
 \dontrun{
 figure()
 }

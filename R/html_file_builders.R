@@ -187,12 +187,6 @@ add_image_footnote <- function (img_tag, footnotes, notation = "number")
 #' the figure and caption tags.
 #'
 #' @examples
-#' # Example usage:
-#' # Create an HTML snippet
-#' html_snippet <- "<table><tr><td>Example</td></tr></table>"
-#' 
-#' # Call figure() to wrap the snippet in figure tags with a caption and number
-#' figure(html_snippet, "This is a caption", 1)
 #' \dontrun{
 #' figure()
 #' }
@@ -236,12 +230,6 @@ figure <- function(html, caption = NULL, caption_number = NULL) {
 #' code with the added caption.
 #'
 #' @examples
-#' # Example usage:
-#' # Create an HTML table snippet
-#' html_table <- "<table><tr><td>Example</td></tr></table>"
-#' 
-#' # Call table() to add a caption to the table with a number
-#' table(html_table, "This is a table caption", 1)
 #' \dontrun{
 #' table()
 #' }

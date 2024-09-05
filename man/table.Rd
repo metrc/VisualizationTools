@@ -27,12 +27,6 @@ with "Table [caption_number]: ". If no caption is provided, the function
 outputs the snippet as is.
 }
 \examples{
-# Example usage:
-# Create an HTML table snippet
-html_table <- "<table><tr><td>Example</td></tr></table>"
-
-# Call table() to add a caption to the table with a number
-table(html_table, "This is a table caption", 1)
 \dontrun{
 table()
 }
