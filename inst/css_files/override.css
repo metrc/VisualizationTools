@@ -17,3 +17,26 @@ figcaption::before {
     content: 'Figure ' counter(caption) '. ';
     font-weight: bold;
 }
+
+/* Disable Custom Fonts */
+body.libertinus {
+  font-family: Georgia, Cambria, 'Times New Roman', Times, serif !important;
+}
+
+body {
+  font-family: Georgia, Cambria, 'Times New Roman', Times, serif !important;
+  line-height: 1.8;
+
+  max-width: 80ch;
+  min-height: 100vh;
+  overflow-x: hidden;
+  margin: 0 auto;
+  padding: 2rem 1.25rem;
+
+  counter-reset: theorem definition sidenote-counter;
+
+  color: var(--body-color);
+  background-color: var(--body-bg-color);
+
+  text-rendering: optimizeLegibility;
+}
