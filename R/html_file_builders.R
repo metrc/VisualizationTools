@@ -185,6 +185,8 @@ add_image_footnote <- function (img_tag, footnotes, notation = "number")
 #'
 #' @return The function does not return a value but prints the HTML code with 
 #' the figure and caption tags.
+#' 
+#' @export
 #'
 #' @examples
 #' \dontrun{
@@ -225,6 +227,8 @@ figure <- function(html, caption = NULL, caption_number = NULL) {
 #' no caption will be added.
 #' @param caption_number An optional integer or string to prefix the caption 
 #' with a number.
+#' 
+#' @export
 #'
 #' @return The function does not return a value but prints the modified HTML 
 #' code with the added caption.
