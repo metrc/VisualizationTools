@@ -274,7 +274,7 @@ table <- function(html, caption = NULL, caption_number = NULL) {
 #' install_default_files()
 #' }
 install_default_files <- function(target_path){
-  cp_files <- c(system.file("css_files", "latex-css", "style.css", package = "VisualizationTools"),
+  cp_files <- c(system.file("css_files", "style.css", package = "VisualizationTools"),
                 system.file("css_files", "override.css", package = "VisualizationTools"),
                 system.file("css_files", "print.css", package = "VisualizationTools"),
                 system.file("html_templates", "html-template.html", package = "VisualizationTools"))
