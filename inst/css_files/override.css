@@ -12,11 +12,6 @@ figcaption {
     width: 100%;
     margin-left: 0;
 }
-  
-figcaption::before {
-    content: 'Figure ' counter(caption) '. ';
-    font-weight: bold;
-}
 
 /* Disable Custom Fonts */
 body.libertinus {
