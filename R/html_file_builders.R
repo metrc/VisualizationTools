@@ -200,12 +200,20 @@ figure <- function(html, caption = NULL, caption_number = NULL) {
   figure_html <- paste0(figure_html, html)
   
   # If a caption is provided, add it within a <figcaption> tag
-  if (!is.null(caption)) {
-    if (!is.null(caption_number)) {
-      caption <- paste0("<b>Figure ", caption_number, ":</b> ", caption)
-    }
-    figure_html <- paste0(figure_html, "<figcaption>", caption, "</figcaption>")
+  # Prefix the caption with the caption number if provided
+  if (!is.null(caption_number) && !is.null(caption)) {
+    caption <- paste0("<b>Figure ", caption_number, ":</b> ", caption)
   }
+  
+  if (!is.null(caption_number) && is.null(caption)) {
+    caption <- paste0("<b>Figure ", caption_number, ":</b> ")
+  }
+  
+  if (is.null(caption_number) && !is.null(caption)) {
+    caption <- paste0("<b>Figure:</b> ", caption)
+  }
+  
+  figure_html <- paste0(figure_html, "<figcaption>", caption, "</figcaption>")
   
   # Close the figure tag
   figure_html <- paste0(figure_html, "</figure>")
@@ -241,16 +249,22 @@ figure <- function(html, caption = NULL, caption_number = NULL) {
 table <- function(html, caption = NULL, caption_number = NULL, table_type = "Table") {
   # If a caption is provided, add it after the opening <table> tag
   if (!is.null(caption)) {
-    # Find the position of the first <table> tag and remove it
-    html <- sub("<table>", "", html, fixed = TRUE)
     
     # Prefix the caption with the caption number if provided
-    if (!is.null(caption_number)) {
-      caption <- paste0("<b>",table_type," ", caption_number, ":</b> ", caption)
+    if (!is.null(caption_number) && !is.null(caption)) {
+      replacement <- paste0("><caption><b>",table_type," ", caption_number, ":</b> ", caption,"</caption>")
     }
     
-    # Insert the <caption> tag after the opening <table> tag
-    table_html <- paste0("<table><caption>", caption, "</caption>", html)
+    if (!is.null(caption_number) && is.null(caption)) {
+      replacement <- paste0("><caption><b>",table_type," ", caption_number, ":</b></caption>")
+    }
+    
+    if (is.null(caption_number) && !is.null(caption)) {
+      replacement <- paste0("><caption><b>",table_type, ":</b> ", caption,"</caption>")
+    }
+    
+    table_html <- str_replace(html, ">", replacement)
+    
   } else {
     # If no caption is provided, output the HTML as is
     table_html <- html
