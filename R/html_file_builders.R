@@ -227,6 +227,7 @@ figure <- function(html, caption = NULL, caption_number = NULL) {
 #' no caption will be added.
 #' @param caption_number An optional integer or string to prefix the caption 
 #' with a number.
+#' @param table_type defaults to 'Table' but can be overrode to say 'Appendix' for example
 #' 
 #' @export
 #'
@@ -237,7 +238,7 @@ figure <- function(html, caption = NULL, caption_number = NULL) {
 #' \dontrun{
 #' table()
 #' }
-table <- function(html, caption = NULL, caption_number = NULL) {
+table <- function(html, caption = NULL, caption_number = NULL, table_type = "Table") {
   # If a caption is provided, add it after the opening <table> tag
   if (!is.null(caption)) {
     # Find the position of the first <table> tag and remove it
@@ -245,7 +246,7 @@ table <- function(html, caption = NULL, caption_number = NULL) {
     
     # Prefix the caption with the caption number if provided
     if (!is.null(caption_number)) {
-      caption <- paste0("<b>Table ", caption_number, ":</b> ", caption)
+      caption <- paste0("<b>",table_type," ", caption_number, ":</b> ", caption)
     }
     
     # Insert the <caption> tag after the opening <table> tag

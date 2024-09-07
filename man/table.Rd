@@ -4,7 +4,7 @@
 \alias{table}
 \title{Add a caption to an HTML table snippet with an optional number}
 \usage{
-table(html, caption = NULL, caption_number = NULL)
+table(html, caption = NULL, caption_number = NULL, table_type = "Table")
 }
 \arguments{
 \item{html}{A character string containing the HTML table snippet.}
@@ -14,6 +14,8 @@ no caption will be added.}
 
 \item{caption_number}{An optional integer or string to prefix the caption 
 with a number.}
+
+\item{table_type}{defaults to 'Table' but can be overrode to say 'Appendix' for example}
 }
 \value{
 The function does not return a value but prints the modified HTML 
