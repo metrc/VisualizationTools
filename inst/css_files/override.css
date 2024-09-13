@@ -6,32 +6,29 @@ body {
 /* Figure caption */
 figcaption {
     text-align: left;
-    font-size: 0.923em;
+    font-size: 1.2rem !important; /* Same size as h4 */
     /* border-bottom: 2pt solid #000; */
     padding: 0 0.25em 0.25em;
     width: 100%;
     margin-left: 0;
 }
-
-/* Disable Custom Fonts */
-body.libertinus {
-  font-family: Georgia, Cambria, 'Times New Roman', Times, serif !important;
+  
+figcaption::before {
+    content: unset !important;
+    font-weight: bold;
 }
 
-body {
-  font-family: Georgia, Cambria, 'Times New Roman', Times, serif !important;
-  line-height: 1.8;
+/* Table caption */
+caption {
+  text-align: left;
+  font-size: 1.2rem !important; /* Same size as h4 */
+  /* border-bottom: 2pt solid #000; */
+  padding: 0 0.25em 0.25em;
+  width: 100%;
+  margin-left: 0;
+}
 
-  max-width: 80ch;
-  min-height: 100vh;
-  overflow-x: hidden;
-  margin: 0 auto;
-  padding: 2rem 1.25rem;
-
-  counter-reset: theorem definition sidenote-counter;
-
-  color: var(--body-color);
-  background-color: var(--body-bg-color);
-
-  text-rendering: optimizeLegibility;
+caption::before {
+  content: unset !important;
+  font-weight: bold;
 }

@@ -196,9 +196,6 @@ figure <- function(html, caption = NULL, caption_number = NULL) {
   # Start building the figure HTML
   figure_html <- "<figure>"
   
-  # Add the HTML content
-  figure_html <- paste0(figure_html, html)
-  
   # If a caption is provided, add it within a <figcaption> tag
   # Prefix the caption with the caption number if provided
   if (!is.null(caption_number) && !is.null(caption)) {
@@ -214,6 +211,9 @@ figure <- function(html, caption = NULL, caption_number = NULL) {
   }
   
   figure_html <- paste0(figure_html, "<figcaption>", caption, "</figcaption>")
+  
+  # Add the HTML content
+  figure_html <- paste0(figure_html, html)
   
   # Close the figure tag
   figure_html <- paste0(figure_html, "</figure>")

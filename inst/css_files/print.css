@@ -5,10 +5,18 @@ body {
 }
 
 /* print.css */
-table, img, svg {
+table, figure, img, svg {
     break-inside: avoid;
 }
 
 h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+}
+
+caption {
+    page-break-after: avoid;
+}
+
+figcaption {
     page-break-after: avoid;
 }
