@@ -42,15 +42,7 @@ Now your R environment should be properly setup with devtools.
 
 ### Installing R Packages that VisualizationTools depends on
 
-Next, we must install the R packages which VisualizationTools depends on. These packages are:
-
-* [tidyverse](https://www.tidyverse.org/): R Packages for Data Science.
-* [httr](https://httr.r-lib.org/) R Library to work with URLs and HTTP.
-* [feather](https://posit.co/blog/feather/): Fast on-disk file format for tabular data.
-* [googlesheets4](https://googlesheets4.tidyverse.org/) R API Wrapper for Google Sheets.
-* [igraph](https://r.igraph.org): R package of the igraph network analysis library.
-* [writexl](https://cran.r-project.org/web/packages/writexl/index.html): Library to write to XLSX files.
-* [readr](https://readr.tidyverse.org/): Read rectangular Text Data.
+Next, we must install the R packages which VisualizationTools depends on. 
 
 Just like with the R devtools installation process, we must first install some systems-level dependencies since we will be compiling them from source.
 

@@ -222,6 +222,10 @@ figure <- function(html, caption = NULL, caption_number = NULL) {
   cat(figure_html)
 }
 
+
+
+
+
 #' Add a caption to an HTML table snippet with an optional number
 #'
 #' This function takes an HTML snippet containing a table and adds a `<caption>` 
@@ -272,6 +276,41 @@ table <- function(html, caption = NULL, caption_number = NULL, table_type = "Tab
   
   # Output the complete table HTML
   cat(table_html)
+}
+
+
+#' Export Plotly to Portable HTML String
+#'
+#' This function exports plotly plots as stand alone iframes
+#' 
+#' @param p the plot to export
+#' @param style the style attribute value for the plotly div
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' export_plotly()
+#' }
+export_plotly <- function(p, style="height: 700px; width: 100%; border: none;") {
+  
+  fn <- tempfile(fileext = ".html")
+  
+  htmlwidgets::saveWidget(p, fn, selfcontained = TRUE)
+  
+  html_widget <- readLines(fn, warn = FALSE) %>% paste(collapse = "\n")
+  
+  script_content <- paste0("<div id='target_script_id'></div>\n<script>\n", 
+                           "  let x = `", base64enc::base64encode(charToRaw(html_widget)),"`\n",
+                           "  const iframe = document.createElement('iframe');\n",
+                           "  iframe.style = '", style, "';\n",
+                           "  iframe.srcdoc = atob(x);",
+                           "  document.getElementById('target_script_id').appendChild(iframe);\n",
+                           "</script>"
+                           )
+  
+  file.remove(fn)
+  
+  return(script_content)
 }
 
 
