@@ -335,7 +335,7 @@ if_needed_generate_example_data <- function(test_analytic, example_constructs = 
         for (i in seq(length(type_list))) {
           type <- type_list[i]
           if (str_detect(type, ',|;')) {
-            inner_sep <- ifelse(str_detect(type, ';'), ';', ',')
+            inner_sep <- ifelse(str_detect(type, ','), ',', ';')
             target_type <- type
             new_col <- NULL
             for (inner_target_type in unlist(str_split(target_type, inner_sep))){
@@ -354,14 +354,14 @@ if_needed_generate_example_data <- function(test_analytic, example_constructs = 
           } else {
             new_col <- get_values(target_rows, type)
           }
-          expanded_analytic[i] <- new_col
+          expanded_analytic[i + 1] <- new_col
           
         }
         zipped_analytic <- expanded_analytic %>%
-          unite('temporary', all_of(-study_id), sep = column_sep) %>%
+          unite('temporary', -study_id, sep = column_sep) %>%
           group_by(study_id) %>%
-          summarize(!!sym(construct) := paste0(temporary, sep = row_sep))
-        test_analytic <- left_join(test_analytic, zipped_analytic)
+          reframe(!!sym(construct) := paste0(temporary, collapse = row_sep))
+        test_analytic <- left_join(test_analytic %>% select(-!!sym(construct)), zipped_analytic)
       } else if (str_detect(type, ',')) {
         final_out <- c()
         for (typechild in unlist(str_split(type, ','))) {
