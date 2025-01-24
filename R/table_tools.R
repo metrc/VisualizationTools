@@ -318,10 +318,10 @@ if_needed_generate_example_data <- function(test_analytic, example_constructs = 
                                     0))
         target_rows <- sum(inner_analytic$rows)
         
-        seps <- str_remove(type, "\'\\).+") %>%
-          str_remove("\\(\'") %>%
-          str_split("', '") %>%
-          unlist()
+        seps <- str_remove(type, "\'\\).*") %>%  
+          str_remove("\\(\'") %>%   
+          str_split("', '") %>%       
+          unlist()   
         row_sep <- seps[1]
         column_sep <- seps[2]
         
@@ -363,9 +363,27 @@ if_needed_generate_example_data <- function(test_analytic, example_constructs = 
           summarize(!!sym(construct) := paste0(temporary, sep = row_sep))
         test_analytic <- left_join(test_analytic, zipped_analytic)
       } else if (str_detect(type, ',')) {
-        test_analytic[construct] <- get_values(nrow(test_analytic), type, sep = ',')
+        final_out <- c()
+        for (typechild in unlist(str_split(type, ','))) {
+          out_column <- get_values(nrow(test_analytic), typechild)
+          if (length(final_out) == 0) {
+            final_out <- out_column
+          } else {
+            final_out <- paste(final_out, out_column, sep = ',')
+          }
+        }
+        test_analytic[construct] <- final_out
       } else if (str_detect(type, ';')) {
-        test_analytic[construct] <- get_values(nrow(test_analytic), type, sep = ';')
+        final_out <- c()
+        for (typechild in unlist(str_split(type, ';'))) {
+          out_column <- get_values(nrow(test_analytic), typechild)
+          if (length(final_out) == 0) {
+            final_out <- out_column
+          } else {
+            final_out <- paste(final_out, out_column, sep = ';')
+          }
+        }
+        test_analytic[construct] <- final_out
       } else {
         test_analytic[construct] <- get_values(nrow(test_analytic), type)
       }
