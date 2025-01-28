@@ -195,10 +195,17 @@ confirm_stability_of_related_visual <- function(function_name, key){
 #' }
 if_needed_generate_example_data <- function(test_analytic, example_constructs = '', example_types = ''){
   today <- Sys.Date()
+  lorem_words <- c("lorem", "ipsum", "dolor", "sit", "amet", "consectetur", 
+                   "adipiscing", "elit", "sed", "do", "eiusmod", "tempor", 
+                   "incididunt", "ut", "labore", "et", "dolore", "magna", "aliqua")
+  generate_lorem <- function() {
+    out <- sapply(1:sample(1:3, size = 1), function(x) {
+      paste(sample(lorem_words, sample(5:10, size = 1), replace = TRUE), collapse = " ")
+    })
+    return(paste(out, collapse = '. '))
+  }
+  
   get_values <- function(n, type, sep=NULL) {
-    # rewrite type if statements to incorporate n
-    
-    
     if(type == "Category"){
       modes <- c("Category", "Group", "Type")
       counter <- c("A", "i", "1")
@@ -296,9 +303,28 @@ if_needed_generate_example_data <- function(test_analytic, example_constructs = 
       } else {
         random_booleans <- replicate(n, paste0(sample(1:500, size = sample(1:5, 1), replace = TRUE), 
                                                collapse = sep))      
-      }
+      } 
       return(random_numbers)
-    } 
+    }  else if (type == "FacilityCode") {
+      codes <- c(paste0("AA", LETTERS[seq(1,15)]))
+      random_indices <- sample(1:15, size=n, replace = TRUE)
+      random_codes <- codes[random_indices]
+      return(random_codes)
+    } else if (type == "Character") {
+      if (is.null(sep)){
+        random_strings <- replicate(n, generate_lorem())
+      } else {
+        random_strings <- replicate(
+          n,
+          paste0(
+            sample(generate_lorem(), size = sample(1:5, 1), replace = TRUE),
+            collapse = sep
+          ),
+          simplify = TRUE
+        )
+      }
+      return(random_strings)
+    }
   }
     
   if(is.character(test_analytic) & test_analytic=="Replace with Analytic Tibble") {
