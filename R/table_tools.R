@@ -316,14 +316,27 @@ if_needed_generate_example_data <- function(test_analytic, example_constructs = 
       } else {
         random_strings <- replicate(
           n,
-          paste0(
-            sample(generate_lorem(), size = sample(1:5, 1), replace = TRUE),
-            collapse = sep
-          ),
+          paste0(sample(generate_lorem(), size = sample(1:5, 1), replace = TRUE),
+            collapse = sep),
           simplify = TRUE
         )
       }
       return(random_strings)
+    } else if (type == "Form") {
+      forms <- paste("Form", seq(1, 5))
+      random_indices <- sample(1:5, size=n, replace = TRUE)
+      random_forms <- forms[random_indices]
+      return(random_forms)
+    } else if (type == "Period") {
+      periods <- paste(seq(1, 6), "Unit Period")
+      random_indices <- sample(1:6, size=n, replace = TRUE)
+      random_periods <- periods[random_indices]
+      return(random_periods)
+    } else if (type == "Status") {
+      statuses <- c("Complete", "Complete: Early", "Complete: Late", "Incomplete", "Missed", "Not Started", "Not Expected")
+      random_indices <- sample(1:7, size=n, replace = TRUE)
+      random_statuses <- statuses[random_indices]
+      return(random_statuses)
     }
   }
     
