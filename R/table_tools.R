@@ -339,95 +339,99 @@ if_needed_generate_example_data <- function(test_analytic, example_constructs = 
       return(random_statuses)
     }
   }
-    
-  if(is.character(test_analytic) & test_analytic=="Replace with Analytic Tibble") {
-    test_analytic <- tibble(study_id=as.character(seq(999)+1000))
-    used_category <- list()
-    for(i in seq(length(example_constructs))){
-      construct <- example_constructs[i]
-      type <- example_types[i]
-      
-      if (str_detect(type, '\\|')) {
-        random_booleans <- sample(c(TRUE, FALSE), size = nrow(test_analytic), replace = TRUE)
-        test_analytic[construct] <- random_booleans
+  
+  if(length(test_analytic)==1){
+    if(is.character(test_analytic) & test_analytic=="Replace with Analytic Tibble") {
+      test_analytic <- tibble(study_id=as.character(seq(999)+1000))
+      used_category <- list()
+      for(i in seq(length(example_constructs))){
+        construct <- example_constructs[i]
+        type <- example_types[i]
         
-        inner_analytic <- test_analytic %>%
-          mutate(rows = ifelse(!!sym(construct),
-                                    sample(1:10, replace = TRUE),
-                                    0))
-        target_rows <- sum(inner_analytic$rows)
-        
-        seps <- str_remove(type, "\'\\).*") %>%  
-          str_remove("\\(\'") %>%   
-          str_split("', '") %>%       
-          unlist()   
-        row_sep <- seps[1]
-        column_sep <- seps[2]
-        
-        type_list <- str_remove(type, '^[^\\)]+\\)') %>%
-          str_split('\\|') %>%
-          unlist()
-        
-        expanded_analytic <- tibble(
-          study_id = rep(inner_analytic$study_id, inner_analytic$rows)
-        )
-        for (i in seq(length(type_list))) {
-          type <- type_list[i]
-          if (str_detect(type, ',|;')) {
-            inner_sep <- ifelse(str_detect(type, ','), ',', ';')
-            target_type <- type
-            new_col <- NULL
-            for (inner_target_type in unlist(str_split(target_type, inner_sep))){
-              if (str_detect(inner_target_type, '-N')) {
-                inner_new_col <- get_values(target_rows, str_remove(inner_target_type, '-N'), sep = inner_sep)
-                if (is.null(new_col)) {
-                  new_col <- inner_new_col
-                } else {
-                  new_col <- paste0(new_col, inner_new_col, sep = inner_sep)
+        if (str_detect(type, '\\|')) {
+          random_booleans <- sample(c(TRUE, FALSE), size = nrow(test_analytic), replace = TRUE)
+          test_analytic[construct] <- random_booleans
+          
+          inner_analytic <- test_analytic %>%
+            mutate(rows = ifelse(!!sym(construct),
+                                 sample(1:10, replace = TRUE),
+                                 0))
+          target_rows <- sum(inner_analytic$rows)
+          
+          seps <- str_remove(type, "\'\\).*") %>%  
+            str_remove("\\(\'") %>%   
+            str_split("', '") %>%       
+            unlist()   
+          row_sep <- seps[1]
+          column_sep <- seps[2]
+          
+          type_list <- str_remove(type, '^[^\\)]+\\)') %>%
+            str_split('\\|') %>%
+            unlist()
+          
+          expanded_analytic <- tibble(
+            study_id = rep(inner_analytic$study_id, inner_analytic$rows)
+          )
+          for (i in seq(length(type_list))) {
+            type <- type_list[i]
+            if (str_detect(type, ',|;')) {
+              inner_sep <- ifelse(str_detect(type, ','), ',', ';')
+              target_type <- type
+              new_col <- NULL
+              for (inner_target_type in unlist(str_split(target_type, inner_sep))){
+                if (str_detect(inner_target_type, '-N')) {
+                  inner_new_col <- get_values(target_rows, str_remove(inner_target_type, '-N'), sep = inner_sep)
+                  if (is.null(new_col)) {
+                    new_col <- inner_new_col
+                  } else {
+                    new_col <- paste0(new_col, inner_new_col, sep = inner_sep)
+                  }
                 }
               }
-            }
               
-          } else if (str_detect(type, '-N')) {
-            new_col <- get_values(target_rows, str_remove(type, '-N'), sep = ',')
-          } else {
-            new_col <- get_values(target_rows, type)
+            } else if (str_detect(type, '-N')) {
+              new_col <- get_values(target_rows, str_remove(type, '-N'), sep = ',')
+            } else {
+              new_col <- get_values(target_rows, type)
+            }
+            expanded_analytic[i + 1] <- new_col
+            
           }
-          expanded_analytic[i + 1] <- new_col
-          
-        }
-        zipped_analytic <- expanded_analytic %>%
-          unite('temporary', -study_id, sep = column_sep) %>%
-          group_by(study_id) %>%
-          reframe(!!sym(construct) := paste0(temporary, collapse = row_sep))
-        test_analytic <- left_join(test_analytic %>% select(-!!sym(construct)), zipped_analytic)
-      } else if (str_detect(type, ',')) {
-        final_out <- c()
-        for (typechild in unlist(str_split(type, ','))) {
-          out_column <- get_values(nrow(test_analytic), typechild)
-          if (length(final_out) == 0) {
-            final_out <- out_column
-          } else {
-            final_out <- paste(final_out, out_column, sep = ',')
+          zipped_analytic <- expanded_analytic %>%
+            unite('temporary', -study_id, sep = column_sep) %>%
+            group_by(study_id) %>%
+            reframe(!!sym(construct) := paste0(temporary, collapse = row_sep))
+          test_analytic <- left_join(test_analytic %>% select(-!!sym(construct)), zipped_analytic)
+        } else if (str_detect(type, ',')) {
+          final_out <- c()
+          for (typechild in unlist(str_split(type, ','))) {
+            out_column <- get_values(nrow(test_analytic), typechild)
+            if (length(final_out) == 0) {
+              final_out <- out_column
+            } else {
+              final_out <- paste(final_out, out_column, sep = ',')
+            }
           }
-        }
-        test_analytic[construct] <- final_out
-      } else if (str_detect(type, ';')) {
-        final_out <- c()
-        for (typechild in unlist(str_split(type, ';'))) {
-          out_column <- get_values(nrow(test_analytic), typechild)
-          if (length(final_out) == 0) {
-            final_out <- out_column
-          } else {
-            final_out <- paste(final_out, out_column, sep = ';')
+          test_analytic[construct] <- final_out
+        } else if (str_detect(type, ';')) {
+          final_out <- c()
+          for (typechild in unlist(str_split(type, ';'))) {
+            out_column <- get_values(nrow(test_analytic), typechild)
+            if (length(final_out) == 0) {
+              final_out <- out_column
+            } else {
+              final_out <- paste(final_out, out_column, sep = ';')
+            }
           }
+          test_analytic[construct] <- final_out
+        } else {
+          test_analytic[construct] <- get_values(nrow(test_analytic), type)
         }
-        test_analytic[construct] <- final_out
-      } else {
-        test_analytic[construct] <- get_values(nrow(test_analytic), type)
       }
+      return(test_analytic)
+    } else{
+      return(test_analytic)
     }
-    return(test_analytic)
   } else{
     return(test_analytic)
   }
