@@ -10,19 +10,26 @@ if_needed_generate_example_data(
   example_types = ""
 )
 }
-\arguments{
-\item{function_name}{name of the visualization function}
-
-\item{key}{verification key}
-}
 \value{
-summed tibble
+dummy analytic dataset
 }
 \description{
-Makes sure a related visualization has not changed
-}
-\examples{
-\dontrun{
-if_needed_generate_example_data()
-}
+Generates random data to test visualizations. Currently accepted data types are:
+Category,
+Boolean,
+Date,
+Number,
+FacilityCode (15 Codes, AAA - AAO),
+Character (random lorem string, 1-3 "sentences"),
+Form,
+Period,
+FollowupStatus,
+FollowupPeriod,
+NamedCategory
+
+Adding a '-N' to the end of a type will replicate values, separated with a comma.
+Long Files are supported and are formed like
+"('rowsep', 'colsep')Type1|Type2|Type3" etc.
+NamedCategory type is formed like
+"NamedCategory[\'Value 1\' \'Value 2\']" etc.
 }

@@ -181,18 +181,34 @@ confirm_stability_of_related_visual <- function(function_name, key){
 
 #' Generate dummy dataset
 #' 
-#' @description Makes sure a related visualization has not changed
+#' @description 
+#' Generates random data to test visualizations. Currently accepted data types are:
+#' Category,
+#' Boolean,
+#' Date,
+#' Number,
+#' FacilityCode (15 Codes, AAA - AAO),
+#' Character (random lorem string, 1-3 "sentences"),
+#' Form,
+#' Period,
+#' FollowupStatus,
+#' FollowupPeriod,
+#' NamedCategory
+#' 
+#' Adding a '-N' to the end of a type will replicate values, separated with a comma.
+#' Long Files are supported and are formed like
+#' "('rowsep', 'colsep')Type1|Type2|Type3" etc.
+#' NamedCategory type is formed like
+#' "NamedCategory[\'Value 1\' \'Value 2\']" etc.
 #'
-#' @param function_name name of the visualization function
-#' @param key verification key
-#'
-#' @return summed tibble
+#' @return dummy analytic dataset
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' if_needed_generate_example_data()
-#' }
+#' if_needed_generate_example_data("Replace with Analytic Tibble", 
+#' example_constructs = c("facilitycode", "severity"),
+#' example_types = c("FacilityCode", "NamedCategory['Mild' 'Moderate' 'Severe']))
+#' 
 if_needed_generate_example_data <- function(test_analytic, example_constructs = '', example_types = ''){
   today <- Sys.Date()
   lorem_words <- c("lorem", "ipsum", "dolor", "sit", "amet", "consectetur", 
@@ -332,11 +348,32 @@ if_needed_generate_example_data <- function(test_analytic, example_constructs = 
       random_indices <- sample(1:6, size=n, replace = TRUE)
       random_periods <- periods[random_indices]
       return(random_periods)
-    } else if (type == "Status") {
-      statuses <- c("Complete", "Complete: Early", "Complete: Late", "Incomplete", "Missed", "Not Started", "Not Expected")
+    } else if (type == "FollowupStatus") {
+      statuses <- c("Complete", "Complete: Early", "Complete: Late", "Incomplete", 
+                    "Missed", "Not Started", "Not Expected")
       random_indices <- sample(1:7, size=n, replace = TRUE)
       random_statuses <- statuses[random_indices]
       return(random_statuses)
+    } else if (type == "FollowupPeriod") {
+      periods <- c("2 Week", "3 Month", "6 Month", "12 Month")
+      random_indices <- sample(1:4, size=n, replace = TRUE)
+      random_periods <- periods[random_indices]
+      return(random_periods)
+    } else if (str_detect(type, "NamedCategory")) {
+      categories <- type %>%
+        str_remove('NamedCategory\\[') %>%
+        str_remove('\\]') %>%
+        str_split_1("' '") %>%
+        str_remove_all('\'')
+      if (is.null(sep)) {
+        random_indices <- sample(1:length(categories), size=n, replace = TRUE)
+        
+        random_categories <- categories[random_indices]
+      } else {
+        random_categories <- replicate(n, paste0(sample(categories, size = sample(1:5, 1), 
+                                                        replace = TRUE), collapse = sep))    
+      } 
+      return(random_categories)
     }
   }
     
@@ -423,6 +460,8 @@ if_needed_generate_example_data <- function(test_analytic, example_constructs = 
           }
         }
         test_analytic[construct] <- final_out
+      } else if (str_detect(type, '-N')) {
+        test_analytic[construct] <- get_values(nrow(test_analytic), str_remove(type, '-N'), sep = ',')
       } else {
         test_analytic[construct] <- get_values(nrow(test_analytic), type)
       }
