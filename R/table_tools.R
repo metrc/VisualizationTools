@@ -461,14 +461,11 @@ if_needed_generate_example_data <- function(test_analytic, example_constructs = 
             }
           }
           test_analytic[construct] <- final_out
+        } else if (str_detect(type, '-N')) {
+          test_analytic[construct] <- get_values(nrow(test_analytic), str_remove(type, '-N'), sep = ',')
         } else {
           test_analytic[construct] <- get_values(nrow(test_analytic), type)
         }
-        test_analytic[construct] <- final_out
-      } else if (str_detect(type, '-N')) {
-        test_analytic[construct] <- get_values(nrow(test_analytic), str_remove(type, '-N'), sep = ',')
-      } else {
-        test_analytic[construct] <- get_values(nrow(test_analytic), type)
       }
       return(test_analytic)
     } else{
