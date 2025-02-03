@@ -193,7 +193,8 @@ confirm_stability_of_related_visual <- function(function_name, key){
 #' Period,
 #' FollowupStatus,
 #' FollowupPeriod,
-#' NamedCategory
+#' NamedCategory,
+#' TreatmentArm
 #' 
 #' Adding a '-N' to the end of a type will replicate values, separated with a comma.
 #' Long Files are supported and are formed like
@@ -374,7 +375,11 @@ if_needed_generate_example_data <- function(test_analytic, example_constructs = 
                                                         replace = TRUE), collapse = sep))    
       } 
       return(random_categories)
-    }
+    } else if (type == "TreatmentArm") {
+      groups <- c('Group A', 'Group B', NA)
+      random_groups <- sample(groups, size=n, replace = TRUE)
+      return(random_groups)
+    } 
   }
   
   if(length(test_analytic)==1){

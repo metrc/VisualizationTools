@@ -25,7 +25,8 @@ Form,
 Period,
 FollowupStatus,
 FollowupPeriod,
-NamedCategory
+NamedCategory,
+TreatmentArm
 
 Adding a '-N' to the end of a type will replicate values, separated with a comma.
 Long Files are supported and are formed like
