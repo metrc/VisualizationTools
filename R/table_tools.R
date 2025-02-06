@@ -187,6 +187,7 @@ confirm_stability_of_related_visual <- function(function_name, key){
 #' Boolean,
 #' Date,
 #' Number,
+#' Number1dgt,
 #' FacilityCode (15 Codes, AAA - AAO),
 #' Character (random lorem string, 1-3 "sentences"),
 #' Form,
@@ -197,6 +198,9 @@ confirm_stability_of_related_visual <- function(function_name, key){
 #' TreatmentArm
 #' 
 #' Adding a '-N' to the end of a type will replicate values, separated with a comma.
+#' '-NS' will separate replicated values with a semicolon.
+#' The '-U(n)' tag allows you to specify the size of the category you'd like to generate
+#' data for. Replace (n) with the integer size of the category.
 #' Long Files are supported and are formed like
 #' "('rowsep', 'colsep')Type1|Type2|Type3" etc.
 #' NamedCategory type is formed like
@@ -222,7 +226,7 @@ if_needed_generate_example_data <- function(test_analytic, example_constructs = 
     return(paste(out, collapse = '. '))
   }
   
-  get_values <- function(n, type, sep=NULL) {
+  get_values <- function(n, type, sep=NULL, unique_vals = NULL) {
     if(type == "Category"){
       modes <- c("Category", "Group", "Type")
       counter <- c("A", "i", "1")
@@ -268,7 +272,11 @@ if_needed_generate_example_data <- function(test_analytic, example_constructs = 
         return(result)
       }
       
-      number_of_categories <- sample(seq(12)+3, size=1)
+      if (is.null(unique_vals)){
+        number_of_categories <- sample(seq(12)+3, size=1)
+      } else {
+        number_of_categories <- unique_vals
+      }
       counter <- sample(counter, size=1)
       mode <- sample(modes, size=1)
       start <- 0
@@ -322,7 +330,15 @@ if_needed_generate_example_data <- function(test_analytic, example_constructs = 
                                                collapse = sep))      
       } 
       return(random_numbers)
-    }  else if (type == "FacilityCode") {
+    } else if(type == "Number1dgt")  {
+      if (is.null(sep)){
+        random_numbers <- sample(0:9, size=n, replace = TRUE)
+      } else {
+        random_booleans <- replicate(n, paste0(sample(1:500, size = sample(1:5, 1), replace = TRUE), 
+                                               collapse = sep))      
+      } 
+      return(random_numbers)
+    } else if (type == "FacilityCode") {
       codes <- c(paste0("AA", LETTERS[seq(1,15)]))
       random_indices <- sample(1:15, size=n, replace = TRUE)
       random_codes <- codes[random_indices]
@@ -432,7 +448,11 @@ if_needed_generate_example_data <- function(test_analytic, example_constructs = 
               }
               
             } else if (str_detect(type, '-N')) {
-              new_col <- get_values(target_rows, str_remove(type, '-N'), sep = ',')
+              if (str_detect(type, '-NS')) {
+                new_col <- get_values(target_rows, str_remove(type, '-NS'), sep = ';')
+              } else {
+                new_col <- get_values(target_rows, str_remove(type, '-N'), sep = ',')
+              }
             } else {
               new_col <- get_values(target_rows, type)
             }
@@ -466,8 +486,16 @@ if_needed_generate_example_data <- function(test_analytic, example_constructs = 
             }
           }
           test_analytic[construct] <- final_out
+        } else if (str_detect(type, '-U')) {
+          unique_vals_spec <- str_extract(type, "(?<=-U).*") %>% as.numeric()
+          test_analytic[construct] <- get_values(nrow(test_analytic), str_remove(type, "-U(.*)"), 
+                                                 unique_vals = unique_vals_spec)
         } else if (str_detect(type, '-N')) {
-          test_analytic[construct] <- get_values(nrow(test_analytic), str_remove(type, '-N'), sep = ',')
+          if (str_detect(type, '-NS')) {
+            test_analytic[construct] <- get_values(nrow(test_analytic), str_remove(type, '-NS'), sep = ';')
+          } else {
+            test_analytic[construct] <- get_values(nrow(test_analytic), str_remove(type, '-N'), sep = ',')
+          }
         } else {
           test_analytic[construct] <- get_values(nrow(test_analytic), type)
         }

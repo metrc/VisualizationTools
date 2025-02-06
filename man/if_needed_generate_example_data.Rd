@@ -19,6 +19,7 @@ Category,
 Boolean,
 Date,
 Number,
+Number1dgt,
 FacilityCode (15 Codes, AAA - AAO),
 Character (random lorem string, 1-3 "sentences"),
 Form,
@@ -29,6 +30,9 @@ NamedCategory,
 TreatmentArm
 
 Adding a '-N' to the end of a type will replicate values, separated with a comma.
+'-NS' will separate replicated values with a semicolon.
+The '-U(n)' tag allows you to specify the size of the category you'd like to generate
+data for. Replace (n) with the integer size of the category.
 Long Files are supported and are formed like
 "('rowsep', 'colsep')Type1|Type2|Type3" etc.
 NamedCategory type is formed like
