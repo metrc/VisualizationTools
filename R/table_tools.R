@@ -334,14 +334,6 @@ if_needed_generate_example_data <- function(test_analytic, example_constructs = 
                                                collapse = sep))    
       }
       return(random_numbers)
-    } else if(type == "Number1dgt")  {
-      if (is.null(sep)){
-        random_numbers <- sample(0:9, size=n, replace = TRUE)
-      } else {
-        random_booleans <- replicate(n, paste0(sample(1:500, size = sample(1:5, 1), replace = TRUE), 
-                                               collapse = sep))      
-      } 
-      return(random_numbers)
     } else if (type == "FacilityCode") {
       codes <- c(paste0("AA", LETTERS[seq(1,15)]))
       random_indices <- sample(1:15, size=n, replace = TRUE)
