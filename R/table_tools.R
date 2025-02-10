@@ -324,7 +324,7 @@ if_needed_generate_example_data <- function(test_analytic, example_constructs = 
       }
       return(random_dates)
     } else if(type == "Number")  {
-      if (is.null(sep)){
+      if (is.null(sep) & is.null(unique_vals)){
         random_numbers <- sample(1:500, size=n, replace = TRUE)
       } else if (is.null(unique_vals)) {
         random_numbers <- replicate(n, paste0(sample(1:500, size = sample(1:5, 1), replace = TRUE), 
