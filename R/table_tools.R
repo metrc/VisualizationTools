@@ -199,8 +199,9 @@ confirm_stability_of_related_visual <- function(function_name, key){
 #' 
 #' Adding a '-N' to the end of a type will replicate values, separated with a comma.
 #' '-NS' will separate replicated values with a semicolon.
-#' The '-U(n)' tag allows you to specify the size of the category you'd like to generate
-#' data for. Replace (n) with the integer size of the category.
+#' The '-U(n)' tag allows you to specify the size of the category or range of numbers 
+#' you'd like to generate data for. Replace (n) with the integer size of the category 
+#' or number range. EX: \'Number-U4\'
 #' Long Files are supported and are formed like
 #' "('rowsep', 'colsep')Type1|Type2|Type3" etc.
 #' NamedCategory type is formed like
@@ -325,10 +326,13 @@ if_needed_generate_example_data <- function(test_analytic, example_constructs = 
     } else if(type == "Number")  {
       if (is.null(sep)){
         random_numbers <- sample(1:500, size=n, replace = TRUE)
-      } else {
-        random_booleans <- replicate(n, paste0(sample(1:500, size = sample(1:5, 1), replace = TRUE), 
+      } else if (is.null(unique_vals)) {
+        random_numbers <- replicate(n, paste0(sample(1:500, size = sample(1:5, 1), replace = TRUE), 
                                                collapse = sep))      
-      } 
+      } else {
+        random_numbers <- replicate(n, paste0(sample(1:unique_vals, size = sample(1:5, 1), replace = TRUE), 
+                                               collapse = sep))    
+      }
       return(random_numbers)
     } else if(type == "Number1dgt")  {
       if (is.null(sep)){
