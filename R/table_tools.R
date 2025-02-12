@@ -330,8 +330,7 @@ if_needed_generate_example_data <- function(test_analytic, example_constructs = 
         random_numbers <- replicate(n, paste0(sample(1:500, size = sample(1:5, 1), replace = TRUE), 
                                                collapse = sep))      
       } else {
-        random_numbers <- replicate(n, paste0(sample(1:unique_vals, size = sample(1:5, 1), replace = TRUE), 
-                                               collapse = sep))    
+        random_numbers <- sample(1:unique_vals, size=n, replace = TRUE)
       }
       return(random_numbers)
     } else if (type == "FacilityCode") {
@@ -391,7 +390,9 @@ if_needed_generate_example_data <- function(test_analytic, example_constructs = 
       groups <- c('Group A', 'Group B', NA)
       random_groups <- sample(groups, size=n, replace = TRUE)
       return(random_groups)
-    } 
+    } else {
+      stop('INVALID TYPE!')
+    }
   }
   
   if(length(test_analytic)==1){
@@ -426,8 +427,8 @@ if_needed_generate_example_data <- function(test_analytic, example_constructs = 
           expanded_analytic <- tibble(
             study_id = rep(inner_analytic$study_id, inner_analytic$rows)
           )
-          for (i in seq(length(type_list))) {
-            type <- type_list[i]
+          for (ii in seq(length(type_list))) {
+            type <- type_list[ii]
             if (str_detect(type, ',|;')) {
               inner_sep <- ifelse(str_detect(type, ','), ',', ';')
               target_type <- type
@@ -452,7 +453,7 @@ if_needed_generate_example_data <- function(test_analytic, example_constructs = 
             } else {
               new_col <- get_values(target_rows, type)
             }
-            expanded_analytic[i + 1] <- new_col
+            expanded_analytic[ii + 1] <- new_col
             
           }
           zipped_analytic <- expanded_analytic %>%
