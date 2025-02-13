@@ -182,7 +182,9 @@ confirm_stability_of_related_visual <- function(function_name, key){
 #' Generate dummy dataset
 #' 
 #' @description 
-#' Generates random data to test visualizations. Currently accepted data types are:
+#' Generates random data to test visualizations. 
+#' 
+#' Currently accepted data types are:
 #' Category,
 #' Boolean,
 #' Date,
@@ -201,11 +203,12 @@ confirm_stability_of_related_visual <- function(function_name, key){
 #' '-NS' will separate replicated values with a semicolon.
 #' The '-U(n)' tag allows you to specify the size of the category or range of numbers 
 #' you'd like to generate data for. Replace (n) with the integer size of the category 
-#' or number range. EX: \'Number-U4\'
+#' or number range. EX: 'Number-U4'
+#' 
 #' Long Files are supported and are formed like
 #' "('rowsep', 'colsep')Type1|Type2|Type3" etc.
 #' NamedCategory type is formed like
-#' "NamedCategory[\'Value 1\' \'Value 2\']" etc.
+#' "NamedCategory['Value 1' 'Value 2']" etc.
 #'
 #' @return dummy analytic dataset
 #' @export
@@ -226,6 +229,9 @@ if_needed_generate_example_data <- function(test_analytic, example_constructs = 
     })
     return(paste(out, collapse = '. '))
   }
+  
+  example_types <- example_types %>%
+    gsub("(\\[[^\\[\\]]*),(?=[^\\[\\]]*\\])", "\\1COMMASAFE", text, perl = TRUE)
   
   get_values <- function(n, type, sep=NULL, unique_vals = NULL) {
     if(type == "Category"){
@@ -376,7 +382,8 @@ if_needed_generate_example_data <- function(test_analytic, example_constructs = 
         str_remove('NamedCategory\\[') %>%
         str_remove('\\]') %>%
         str_split_1("' '") %>%
-        str_remove_all('\'')
+        str_remove_all('\'') %>%
+        str_replace_all('COMMASAFE', ',')
       if (is.null(sep)) {
         random_indices <- sample(1:length(categories), size=n, replace = TRUE)
         
