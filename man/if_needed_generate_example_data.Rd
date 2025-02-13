@@ -14,7 +14,9 @@ if_needed_generate_example_data(
 dummy analytic dataset
 }
 \description{
-Generates random data to test visualizations. Currently accepted data types are:
+Generates random data to test visualizations. 
+
+Currently accepted data types are:
 Category,
 Boolean,
 Date,
@@ -33,9 +35,10 @@ Adding a '-N' to the end of a type will replicate values, separated with a comma
 '-NS' will separate replicated values with a semicolon.
 The '-U(n)' tag allows you to specify the size of the category or range of numbers 
 you'd like to generate data for. Replace (n) with the integer size of the category 
-or number range. EX: \'Number-U4\'
+or number range. EX: 'Number-U4'
+
 Long Files are supported and are formed like
 "('rowsep', 'colsep')Type1|Type2|Type3" etc.
 NamedCategory type is formed like
-"NamedCategory[\'Value 1\' \'Value 2\']" etc.
+"NamedCategory['Value 1' 'Value 2']" etc.
 }
