@@ -230,8 +230,31 @@ if_needed_generate_example_data <- function(test_analytic, example_constructs = 
     return(paste(out, collapse = '. '))
   }
   
-  example_types <- example_types %>%
-    gsub("(\\[[^\\[\\]]*),(?=[^\\[\\]]*\\])", "\\1COMMASAFE", text, perl = TRUE)
+  replace_commas_in_brackets <- function(input_vector) {
+    result_vector <- character(length(input_vector))
+    
+    for (i in 1:length(input_vector)) {
+      input_string <- input_vector[i]
+      result <- ""
+      inside_brackets <- FALSE
+      
+      for (char in strsplit(input_string, "")[[1]]) {
+        if (char == "[") {
+          inside_brackets <- TRUE
+        } else if (char == "]") {
+          inside_brackets <- FALSE
+        } else if (char == "," && inside_brackets) {
+          char <- "COMMASAFE"
+        }
+        result <- paste0(result, char)
+      }
+      
+      result_vector[i] <- result
+    }
+    
+    return(result_vector)
+  }
+  example_types <- replace_commas_in_brackets(example_types)
   
   get_values <- function(n, type, sep=NULL, unique_vals = NULL) {
     if(type == "Category"){
