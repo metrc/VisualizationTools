@@ -403,7 +403,7 @@ if_needed_generate_example_data <- function(test_analytic, example_constructs = 
     if(is.character(test_analytic) & test_analytic=="Replace with Analytic Tibble") {
       lookbehind_length <- max(str_length(unlist(str_extract_all(example_types, "\\[[^\\[|\\]]*\\]"))), na.rm=TRUE)
       target_regex <- paste0('(?<=\\[[^\\]]{0,', lookbehind_length, '}),(?=[^\\[]*\\])')
-      if(!is_empty(lookbehind_length) & !is.na(lookbehind_length) & !is.infinite(lookbehind_length)){
+      if(!is_empty(lookbehind_length) & !is.na(lookbehind_length) & lookbehind_length!=-Inf){
         example_types <- example_types %>%
            stringi::stri_replace_all_regex(target_regex, 'COMMASAFE')
       }
