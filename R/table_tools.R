@@ -230,11 +230,12 @@ if_needed_generate_example_data <- function(test_analytic, example_constructs = 
     return(paste(out, collapse = '. '))
   }
   
-  lookbehind_length <- max(str_length(unlist(str_extract_all(example_types, "\\[[^\\[|\\]]*\\]"))))
+  lookbehind_length <- max(str_length(unlist(str_extract_all(example_types, "\\[[^\\[|\\]]*\\]"))), na.rm=TRUE)
   target_regex <- paste0('(?<=\\[[^\\]]{0,', lookbehind_length, '}),(?=[^\\[]*\\])')
-  
-  example_types <- example_types %>%
-    stringi::stri_replace_all_regex(target_regex, 'COMMASAFE')
+  if(!is_empty(lookbehind_length) & !is.na(lookbehind_length){
+    example_types <- example_types %>%
+       stringi::stri_replace_all_regex(target_regex, 'COMMASAFE')
+  }
   
   get_values <- function(n, type, sep=NULL, unique_vals = NULL) {
     if(type == "Category"){
