@@ -1,4 +1,4 @@
-ok#' Count Split Cols Long and Wide
+#' Count Split Cols Long and Wide
 #' 
 #' @description splits columns with a given seperator, then counts the values betwwen
 #' the resultant groupt
