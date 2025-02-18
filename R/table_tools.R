@@ -1,4 +1,4 @@
-#' Count Split Cols Long and Wide
+ok#' Count Split Cols Long and Wide
 #' 
 #' @description splits columns with a given seperator, then counts the values betwwen
 #' the resultant groupt
@@ -232,7 +232,7 @@ if_needed_generate_example_data <- function(test_analytic, example_constructs = 
   
   lookbehind_length <- max(str_length(unlist(str_extract_all(example_types, "\\[[^\\[|\\]]*\\]"))), na.rm=TRUE)
   target_regex <- paste0('(?<=\\[[^\\]]{0,', lookbehind_length, '}),(?=[^\\[]*\\])')
-  if(!is_empty(lookbehind_length) & !is.na(lookbehind_length){
+  if(!is_empty(lookbehind_length) & !is.na(lookbehind_length) & !is.infinite(lookbehind_length)){
     example_types <- example_types %>%
        stringi::stri_replace_all_regex(target_regex, 'COMMASAFE')
   }
