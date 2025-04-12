@@ -412,6 +412,7 @@ if_needed_generate_example_data <- function(test_analytic, example_constructs = 
       for(i in seq(length(example_constructs))){
         construct <- example_constructs[i]
         type <- example_types[i]
+        type <- str_remove(type, '\n')
         
         if (str_detect(type, '\\|')) {
           random_booleans <- sample(c(TRUE, FALSE), size = nrow(test_analytic), replace = TRUE)
