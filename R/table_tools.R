@@ -214,9 +214,7 @@ confirm_stability_of_related_visual <- function(function_name, key){
 #' @export
 #'
 #' @examples
-#' if_needed_generate_example_data("Replace with Analytic Tibble", 
-#' example_constructs = c("facilitycode", "severity"),
-#' example_types = c("FacilityCode", "NamedCategory['Mild' 'Moderate' 'Severe']))
+#' if_needed_generate_example_data("Replace with Analytic Tibble", example_constructs = c("facilitycode", "severity"), example_types = c("FacilityCode", "NamedCategory['Mild' 'Moderate' 'Severe']))
 #' 
 if_needed_generate_example_data <- function(test_analytic, example_constructs = '', example_types = ''){
   today <- Sys.Date()
@@ -401,7 +399,16 @@ if_needed_generate_example_data <- function(test_analytic, example_constructs = 
   
   if(length(test_analytic)==1){
     if(is.character(test_analytic) & test_analytic=="Replace with Analytic Tibble") {
-      lookbehind_length <- max(str_length(unlist(str_extract_all(example_types, "\\[[^\\[|\\]]*\\]"))), na.rm=TRUE)
+      if (any(str_detect(example_types, "\\[[^\\[|\\]]*\\]"))) {
+        lookbehind_length <- max(
+          str_length(unlist(str_extract_all(example_types, "\\[[^\\[|\\]]*\\]"))),
+          na.rm = TRUE
+        )
+      } else {
+        lookbehind_length <- NA
+      }
+      example_types <- str_remove_all(example_types, "\n[ \t]*")
+      
       target_regex <- paste0('(?<=\\[[^\\]]{0,', lookbehind_length, '}),(?=[^\\[]*\\])')
       if(!is_empty(lookbehind_length) & !is.na(lookbehind_length) & lookbehind_length!=-Inf){
         example_types <- example_types %>%
