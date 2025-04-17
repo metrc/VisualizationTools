@@ -407,6 +407,7 @@ if_needed_generate_example_data <- function(test_analytic, example_constructs = 
       } else {
         lookbehind_length <- NA
       }
+      example_types <- str_remove_all(example_types, "\n[ \t]*")
       
       target_regex <- paste0('(?<=\\[[^\\]]{0,', lookbehind_length, '}),(?=[^\\[]*\\])')
       if(!is_empty(lookbehind_length) & !is.na(lookbehind_length) & lookbehind_length!=-Inf){
@@ -418,7 +419,6 @@ if_needed_generate_example_data <- function(test_analytic, example_constructs = 
       for(i in seq(length(example_constructs))){
         construct <- example_constructs[i]
         type <- example_types[i]
-        str_remove_all(type, "\n[ \t]*")
         
         if (str_detect(type, '\\|')) {
           random_booleans <- sample(c(TRUE, FALSE), size = nrow(test_analytic), replace = TRUE)
