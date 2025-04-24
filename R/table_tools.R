@@ -469,7 +469,7 @@ if_needed_generate_example_data <- function(test_analytic, example_constructs = 
               }
             } else if (str_detect(type, '-U')) {
               unique_vals_spec <- str_extract(type, "(?<=-U).*") %>% as.numeric()
-              new_cols <- get_values(nrow(test_analytic), str_remove(type, "-U(.*)"), 
+              new_col <- get_values(nrow(test_analytic), str_remove(type, "-U(.*)"), 
                                                      unique_vals = unique_vals_spec)
             } else {
               new_col <- get_values(target_rows, type)
