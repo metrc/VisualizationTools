@@ -92,39 +92,98 @@ reorder_rows <- function(df, new_row_order, unspecified_to_bottom=TRUE) {
 }
 
 
+Here’s an updated roxygen block (and the function header) that matches the hardened column_unzipper() we just wrote:
+
 #' Column unzipper
-#' 
-#' @description takes a dataframe with comma separated list and widens it
-#' into multiple columns, with boolean values
 #'
-#' @param df data to unzip the columns
-#' @param name of column to separate
-#' @param sep string to separate columns, default is ','
+#' @description
+#' Split a delimited “multi-value” column into multiple boolean indicator
+#' columns (one per unique category), optionally retaining the original column.
+#' Handles trimming, `NA`/empty values, and duplicate categories per row.
 #'
-#' @return unzipped tibble
-#' @export
+#' @param df A data frame or tibble.
+#' @param name Column to separate. Can be a string (e.g., `"tags"`) or a bare
+#'   column name (e.g., `tags`).
+#' @param sep A string delimiter used to separate values within the column.
+#'   Defaults to `"; "` (common in REDCap-style exports).
+#' @param drop_original Logical; if `TRUE`, the original delimited column is
+#'   dropped from the result. Defaults to `FALSE`.
+#' @param as_logical Logical; if `TRUE`, output indicators are `TRUE/FALSE`.
+#'   If `FALSE`, outputs are `1/0` suitable for summation. Defaults to `TRUE`.
+#'
+#' @returns
+#' A tibble with all original identifier columns preserved and one additional
+#' column per unique category found in `name`. New columns are logicals
+#' (`TRUE/FALSE`) or integers (`1/0`) depending on `as_logical`.
+#'
+#' @details
+#' - Rows are expanded with `tidyr::separate_rows()`, values are `trimws()`’d,
+#'   and empty/`NA`/`"NA"` entries are dropped.
+#' - Duplicates per id+category are removed before widening, preventing
+#'   `pivot_wider()` list-cols and warnings about non-unique values.
+#' - Missing combinations are filled with `0` (or `FALSE` when `as_logical=TRUE`).
 #'
 #' @examples
 #' \dontrun{
-#' column_unzipper()
+#' library(dplyr)
+#'
+#' df <- tibble::tibble(
+#'   study_id = c("1001","1002","1003"),
+#'   facilitycode = c("HCM","UMD","UMD"),
+#'   ineligibility_reasons = c(
+#'     "Does Not Meet Criteria",
+#'     "Not Enrolled Within Time; Does Not Meet Criteria",
+#'     "Unable to Consent; Maintain Followup"
+#'   )
+#' )
+#'
+#' # Logical indicators (default)
+#' out_logical <- column_unzipper(
+#'   df, name = ineligibility_reasons, sep = "; ", as_logical = TRUE
+#' )
+#'
+#' # Numeric indicators (1/0), dropping original column
+#' out_numeric <- column_unzipper(
+#'   df, name = "ineligibility_reasons", sep = "; ",
+#'   drop_original = TRUE, as_logical = FALSE
+#' )
 #' }
-column_unzipper <- function(df, name, sep=', '){
-  orig <- colnames(df)
-  out <- df %>%
-    rename(col= !!sym(name)) %>% 
-    mutate(col = strsplit(col,sep)) %>%
-    unnest(col) %>%
-    filter(!is.na(col)) %>%
-    pivot_wider(
-      names_from = col,
-      values_from = col
-    ) 
-  new_cols <- colnames(out)[!colnames(out) %in% orig]
-  out <- out %>%
-    mutate(across(all_of(new_cols), ~ !is.na(.)))
-  return(out)
-}
+#'
+#' @export
+column_unzipper <- function(df, name, sep = "; ", drop_original = FALSE, as_logical = TRUE) {
+  nm <- rlang::ensym(name)
+  orig_names <- names(df)
+  id_cols <- setdiff(orig_names, rlang::as_string(nm))
+  df_orig <- df
 
+  out <- df %>%
+    dplyr::rename(col = !!nm) %>%
+    dplyr::mutate(col = as.character(col)) %>%
+    tidyr::separate_rows(col, sep = sep) %>%
+    dplyr::mutate(col = trimws(col)) %>%
+    dplyr::filter(!is.na(col), col != "", col != "NA") %>%
+    dplyr::distinct(dplyr::across(dplyr::all_of(id_cols)), col, .keep_all = TRUE) %>%
+    dplyr::mutate(.value = 1L) %>%
+    tidyr::pivot_wider(
+      id_cols = dplyr::all_of(id_cols),
+      names_from  = col,
+      values_from = .value,
+      values_fill = 0
+    )
+
+  new_cols <- setdiff(names(out), id_cols)
+  if (as_logical && length(new_cols)) {
+    out <- out %>% dplyr::mutate(dplyr::across(dplyr::all_of(new_cols), ~ .x > 0))
+  }
+
+  if (!drop_original) {
+    out <- df_orig %>%
+      dplyr::select(dplyr::all_of(id_cols), !!nm) %>%
+      dplyr::left_join(out, by = id_cols)
+  }
+
+  out
+}
 
 #' Boolean Column Counter
 #' 
