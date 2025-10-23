@@ -4,24 +4,64 @@
 \alias{column_unzipper}
 \title{Column unzipper}
 \usage{
-column_unzipper(df, name, sep = ", ")
+column_unzipper(df, name, sep = "; ", drop_original = FALSE, as_logical = TRUE)
 }
 \arguments{
-\item{df}{data to unzip the columns}
+\item{df}{A data frame or tibble.}
 
-\item{name}{of column to separate}
+\item{name}{Column to separate. Can be a string (e.g., `"tags"`) or a bare
+column name (e.g., `tags`).}
 
-\item{sep}{string to separate columns, default is ','}
+\item{sep}{A string delimiter used to separate values within the column.
+Defaults to `"; "` (common in REDCap-style exports).}
+
+\item{drop_original}{Logical; if `TRUE`, the original delimited column is
+dropped from the result. Defaults to `FALSE`.}
+
+\item{as_logical}{Logical; if `TRUE`, output indicators are `TRUE/FALSE`.
+If `FALSE`, outputs are `1/0` suitable for summation. Defaults to `TRUE`.}
 }
 \value{
-unzipped tibble
+A tibble with all original identifier columns preserved and one additional
+column per unique category found in `name`. New columns are logicals
+(`TRUE/FALSE`) or integers (`1/0`) depending on `as_logical`.
 }
 \description{
-takes a dataframe with comma separated list and widens it
-into multiple columns, with boolean values
+Split a delimited “multi-value” column into multiple boolean indicator
+columns (one per unique category), optionally retaining the original column.
+Handles trimming, `NA`/empty values, and duplicate categories per row.
+}
+\details{
+- Rows are expanded with `tidyr::separate_rows()`, values are `trimws()`’d,
+  and empty/`NA`/`"NA"` entries are dropped.
+- Duplicates per id+category are removed before widening, preventing
+  `pivot_wider()` list-cols and warnings about non-unique values.
+- Missing combinations are filled with `0` (or `FALSE` when `as_logical=TRUE`).
 }
 \examples{
 \dontrun{
-column_unzipper()
+library(dplyr)
+
+df <- tibble::tibble(
+  study_id = c("1001","1002","1003"),
+  facilitycode = c("HCM","UMD","UMD"),
+  ineligibility_reasons = c(
+    "Does Not Meet Criteria",
+    "Not Enrolled Within Time; Does Not Meet Criteria",
+    "Unable to Consent; Maintain Followup"
+  )
+)
+
+# Logical indicators (default)
+out_logical <- column_unzipper(
+  df, name = ineligibility_reasons, sep = "; ", as_logical = TRUE
+)
+
+# Numeric indicators (1/0), dropping original column
+out_numeric <- column_unzipper(
+  df, name = "ineligibility_reasons", sep = "; ",
+  drop_original = TRUE, as_logical = FALSE
+)
 }
+
 }
