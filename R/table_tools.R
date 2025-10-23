@@ -92,8 +92,6 @@ reorder_rows <- function(df, new_row_order, unspecified_to_bottom=TRUE) {
 }
 
 
-Here’s an updated roxygen block (and the function header) that matches the hardened column_unzipper() we just wrote:
-
 #' Column unzipper
 #'
 #' @description
