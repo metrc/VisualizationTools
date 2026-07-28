@@ -211,21 +211,70 @@ boolean_column_counter <- function(df, groups = NULL){
 
 
 
+#' Canonical Visual Code
+#'
+#' @description Renders a function's parse tree as text, for hashing.
+#'
+#' Walks the tree and writes each node out in a fixed form. Nothing about the
+#' rendering depends on the R version: it never calls deparse(), which is a
+#' pretty printer whose spacing and line breaking change between releases, and
+#' it never calls serialize(), whose payload header records the R version that
+#' wrote it.
+#'
+#' @param x a function, call, or constant
+#'
+#' @return canonical text
+canonical_visual_code <- function(x){
+  if(is.function(x)){
+    return(paste0("fn(", canonical_visual_code(formals(x)), "){", canonical_visual_code(body(x)), "}"))
+  }
+  if(is.symbol(x)){
+    return(paste0("<s:", as.character(x), ">"))
+  }
+  if(is.null(x)){
+    return("<null>")
+  }
+  if(is.pairlist(x) || is.call(x) || is.expression(x) || is.list(x)){
+    parts <- vapply(as.list(x), canonical_visual_code, character(1))
+    nms <- names(x)
+    if(is.null(nms)){
+      nms <- rep("", length(parts))
+    }
+    return(paste0("<", typeof(x), ":", paste0(nms, "=", parts, collapse = ","), ">"))
+  }
+  if(is.atomic(x)){
+    vals <- vapply(seq_along(x), function(i){
+      v <- x[[i]]
+      if(is.na(v)){
+        return("NA")
+      }
+      if(is.character(v)){
+        return(paste0('"', v, '"'))
+      }
+      if(is.double(v)){
+        return(sprintf("%.17g", v))
+      }
+      as.character(v)
+    }, character(1))
+    return(paste0("<", typeof(x), ":", paste(vals, collapse = ""), ">"))
+  }
+  paste0("<", typeof(x), ">")
+}
+
+
 #' Visual Stability Key
 #'
 #' @description Computes the verification key for a visualization function.
 #'
-#' The key is a hash of the function's parse tree, its formals and its body,
-#' rather than of its deparsed text. deparse() is a pretty printer whose spacing
-#' and line breaking change between R releases, so keys recorded on one version
-#' of R did not match the same unchanged function on another. That made keys
-#' recorded on a laptop fail in the environment that renders the reports. The
-#' parse tree carries no formatting, so the key depends only on the code itself
-#' and is unaffected by the R version, by byte compilation, and by whether the
-#' package was installed with source references.
+#' The key is the md5 of the function's canonical parse tree text. It depends
+#' only on the code itself, and not on the R version, on byte compilation, or on
+#' whether the package was installed with source references.
 #'
-#' Source references are dropped and the serialization format is pinned so that
-#' the same function always produces the same key.
+#' Keys used to be rlang::hash() of deparse() output. Both halves of that varied
+#' between environments: deparse() reformats differently between R releases, and
+#' rlang::hash() serializes its input, which stamps the writer's R version into
+#' the bytes being hashed. The same unchanged function therefore produced one key
+#' on a laptop and another in the environment that renders the reports.
 #'
 #' @param f a visualization function
 #'
@@ -237,8 +286,11 @@ boolean_column_counter <- function(df, groups = NULL){
 #' visual_stability_key(VisualizationLibrary::generic_characteristics)
 #' }
 visual_stability_key <- function(f){
-  f <- removeSource(f)
-  rlang::hash(serialize(list(formals(f), body(f)), NULL, version = 2, xdr = TRUE))
+  code <- canonical_visual_code(removeSource(f))
+  path <- tempfile("visual_stability_key")
+  on.exit(unlink(path), add = TRUE)
+  writeBin(charToRaw(enc2utf8(code)), path)
+  unname(tools::md5sum(path))
 }
 
 
@@ -262,11 +314,14 @@ confirm_stability_of_related_visual <- function(function_name, key){
   if(check_key == key){
     return(invisible(TRUE))
   }
-  #Keys recorded before the parse tree scheme hashed deparse() output. They are
-  #still accepted so that this package can be released ahead of the
-  #VisualizationLibrary release that regenerates them.
-  legacy_key <- rlang::hash(paste(deparse(test),collapse="\n"))
-  if(legacy_key == key){
+  #Keys recorded by the two earlier schemes are still accepted so that this
+  #package can be released ahead of the VisualizationLibrary release that
+  #regenerates them. Both hashed through rlang::hash(), which serializes its
+  #input and so stamps the writing R version into the result.
+  stripped <- removeSource(test)
+  legacy_keys <- c(rlang::hash(paste(deparse(test),collapse="\n")),
+                   rlang::hash(serialize(list(formals(stripped), body(stripped)), NULL, version = 2, xdr = TRUE)))
+  if(key %in% legacy_keys){
     return(invisible(TRUE))
   }
   stop(paste0("Function: ",function_name," has changed since this function was updated (key: ",check_key,")"))
