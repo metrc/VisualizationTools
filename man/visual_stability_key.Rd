@@ -15,17 +15,15 @@ verification key
 \description{
 Computes the verification key for a visualization function.
 
-The key is a hash of the function's parse tree, its formals and its body,
-rather than of its deparsed text. deparse() is a pretty printer whose spacing
-and line breaking change between R releases, so keys recorded on one version
-of R did not match the same unchanged function on another. That made keys
-recorded on a laptop fail in the environment that renders the reports. The
-parse tree carries no formatting, so the key depends only on the code itself
-and is unaffected by the R version, by byte compilation, and by whether the
-package was installed with source references.
+The key is the md5 of the function's canonical parse tree text. It depends
+only on the code itself, and not on the R version, on byte compilation, or on
+whether the package was installed with source references.
 
-Source references are dropped and the serialization format is pinned so that
-the same function always produces the same key.
+Keys used to be rlang::hash() of deparse() output. Both halves of that varied
+between environments: deparse() reformats differently between R releases, and
+rlang::hash() serializes its input, which stamps the writer's R version into
+the bytes being hashed. The same unchanged function therefore produced one key
+on a laptop and another in the environment that renders the reports.
 }
 \examples{
 \dontrun{
