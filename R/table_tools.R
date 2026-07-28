@@ -211,8 +211,39 @@ boolean_column_counter <- function(df, groups = NULL){
 
 
 
+#' Visual Stability Key
+#'
+#' @description Computes the verification key for a visualization function.
+#'
+#' The key is a hash of the function's parse tree, its formals and its body,
+#' rather than of its deparsed text. deparse() is a pretty printer whose spacing
+#' and line breaking change between R releases, so keys recorded on one version
+#' of R did not match the same unchanged function on another. That made keys
+#' recorded on a laptop fail in the environment that renders the reports. The
+#' parse tree carries no formatting, so the key depends only on the code itself
+#' and is unaffected by the R version, by byte compilation, and by whether the
+#' package was installed with source references.
+#'
+#' Source references are dropped and the serialization format is pinned so that
+#' the same function always produces the same key.
+#'
+#' @param f a visualization function
+#'
+#' @return verification key
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' visual_stability_key(VisualizationLibrary::generic_characteristics)
+#' }
+visual_stability_key <- function(f){
+  f <- removeSource(f)
+  rlang::hash(serialize(list(formals(f), body(f)), NULL, version = 2, xdr = TRUE))
+}
+
+
 #' Confirm Stability of Related Visual
-#' 
+#'
 #' @description Makes sure a related visualization has not changed
 #'
 #' @param function_name name of the visualization function
@@ -227,12 +258,18 @@ boolean_column_counter <- function(df, groups = NULL){
 #' }
 confirm_stability_of_related_visual <- function(function_name, key){
   test <- get(function_name, envir = loadNamespace("VisualizationLibrary"))
-  code <- deparse(test)
-  code <- paste(code,collapse="\n")
-  check_key <- rlang::hash(code)
-  if(check_key != key){
-    stop(paste0("Function: ",function_name," has changed since this function was updated (key: ",check_key,")"))
+  check_key <- visual_stability_key(test)
+  if(check_key == key){
+    return(invisible(TRUE))
   }
+  #Keys recorded before the parse tree scheme hashed deparse() output. They are
+  #still accepted so that this package can be released ahead of the
+  #VisualizationLibrary release that regenerates them.
+  legacy_key <- rlang::hash(paste(deparse(test),collapse="\n"))
+  if(legacy_key == key){
+    return(invisible(TRUE))
+  }
+  stop(paste0("Function: ",function_name," has changed since this function was updated (key: ",check_key,")"))
 }
 
 
