@@ -2,6 +2,8 @@
 
 export(add_image_footnote)
 export(boolean_column_counter)
+export(collapse_other)
+export(collapse_other_multi)
 export(column_unzipper)
 export(confirm_stability_of_related_visual)
 export(count_split_cols_long_and_wide)

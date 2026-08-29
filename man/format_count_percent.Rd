@@ -4,14 +4,15 @@
 \alias{format_count_percent}
 \title{Format Count Percent}
 \usage{
-format_count_percent(numerator, denominator, decimals = 0)
+format_count_percent(numerator, denominator, decimals = 1)
 }
 \arguments{
 \item{numerator}{single value}
 
 \item{denominator}{single value}
 
-\item{decimals}{number of decimals places, defaults to zero}
+\item{decimals}{number of decimals places, defaults to one so that small
+nonzero counts do not display as 0%}
 }
 \value{
 string
