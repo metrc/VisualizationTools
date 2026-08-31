@@ -42,3 +42,7 @@ Long Files are supported and are formed like
 NamedCategory type is formed like
 "NamedCategory['Value 1' 'Value 2']" etc.
 }
+\examples{
+if_needed_generate_example_data("Replace with Analytic Tibble", example_constructs = c("facilitycode", "severity"), example_types = c("FacilityCode", "NamedCategory['Mild' 'Moderate' 'Severe']"))
+
+}

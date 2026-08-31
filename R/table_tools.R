@@ -363,7 +363,7 @@ confirm_stability_of_related_visual <- function(function_name, key){
 #' @export
 #'
 #' @examples
-#' if_needed_generate_example_data("Replace with Analytic Tibble", example_constructs = c("facilitycode", "severity"), example_types = c("FacilityCode", "NamedCategory['Mild' 'Moderate' 'Severe']))
+#' if_needed_generate_example_data("Replace with Analytic Tibble", example_constructs = c("facilitycode", "severity"), example_types = c("FacilityCode", "NamedCategory['Mild' 'Moderate' 'Severe']"))
 #' 
 if_needed_generate_example_data <- function(test_analytic, example_constructs = '', example_types = ''){
   today <- Sys.Date()
