@@ -675,3 +675,64 @@ if_needed_generate_example_data <- function(test_analytic, example_constructs = 
     return(test_analytic)
   }
 }
+
+
+#' Auto Unzip a Dataframe
+#' 
+#' @description 
+#' Returns the full long file given a dataframe long file implemented for elemental studies.
+#' 
+#' @param df a dataframe that is a zipped long file using ¶ as a row sep and ┘ as a column sep
+#'
+#' @return tibble unzipped
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' auto_unzip_dataframe(df)
+#' }
+auto_unzip_dataframe <- function(df){
+  row_sep <- "¶"
+  col_sep <- "┘"
+  df <- df %>% 
+    separate_rows(2, sep=row_sep)
+  cols <- unlist(strsplit(str_remove_all(df[[2]][!is.na(df[[2]]) & str_detect(df[[2]],col_sep)][1],paste0(".+",col_sep)),"-"))
+  df <- df %>% 
+    separate(-study_id, c(cols, "col_col"), sep=col_sep) %>% 
+    mutate_all(na_if,"NA") %>% 
+    select(-col_col)
+  return(df)
+}
+
+
+#' Auto Zip a Dataframe
+#' 
+#' @description 
+#' Returns the full long file given its construct item name for long files implemented for elemental studies.
+#' 
+#' @param df a tibble you want to zip
+#' @param name name of the zipped construct defaults to zipped_construct
+#'
+#' @return tibble zipped
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' auto_zip_dataframe(name)
+#' }
+auto_zip_dataframe <- function(df, name="zipped_construct"){
+  row_sep <- "¶"
+  row_replace <- "**paragraph**"
+  col_sep <- "┘"
+  col_replace <- "**corner**"
+  cols <- colnames(df)[colnames(df) != "study_id"]
+  cols_val <- cols %>% paste(collapse = "-")
+  df <- df %>%
+    mutate_all(str_replace_all,row_sep,row_replace) %>% 
+    mutate_all(str_replace_all,col_sep,col_replace) %>% 
+    mutate(col_col = cols_val) %>% 
+    unite(x, all_of(c(cols,"col_col")), sep = col_sep) %>%
+    group_by(study_id) %>%
+    summarise(!!name:= paste(x, collapse=row_sep))
+  return(df)
+}
